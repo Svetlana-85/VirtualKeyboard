@@ -1,0 +1,88 @@
+.wrapper{
+    margin: 0 auto;
+    max-width: 820px;
+}
+
+.Keyboard{
+    display: flex;
+    flex-direction: column;
+    padding: 10px;
+    row-gap: 10px;
+    border-radius: 5px;
+    background-color: $color-background-keyboard;
+}
+
+.keyboardLine{
+    display: flex;
+    flex-direction: row;
+    column-gap: 10px;
+}
+
+.key{
+    //border: 2px solid black;
+    justify-content: center;
+    align-items: center;
+    display: flex;
+    flex-direction: column;
+    border-radius: 3px;
+    color: $background-color-body;
+    height: 36px;
+    background-color: $background-color-key;
+    border: 2px solid $background-color-key;
+    //box-shadow: 1px 1px 1px #3b3a3a;
+
+    &:hover{
+        background-color:  #C4C4C4;
+        border-color: #C4C4C4;
+    }
+}
+
+.keyLetter{
+    width: 36px;
+}
+
+.keySpec2{
+    width: 95px;
+}
+
+.keyShift{
+    width: 95px;
+}
+
+.keyDel{
+    width: 150px;
+}
+
+.keyAlt{
+    width: 50px;
+}
+
+.keySpace{
+    width: 370px;
+}
+
+.keyCtrl{
+    width: 45px; 
+}
+
+.letter{
+    font-size: 16px;
+}
+
+.activeKey{
+    border-color: $color-background-keyboard;
+    background-color: #b36464;
+    transition: 0.7s;
+
+    &:hover{
+        border-color: $color-background-keyboard;
+        background-color: #b36464;
+        transition: 0.5s;
+    }
+}
+
+.edit{
+    width: 810px;
+    height: 100px;
+    border: 2px solid $background-color-key;
+}
