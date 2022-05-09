@@ -111,6 +111,8 @@ export default class Keyboard {
     } else if (keyObj.code === 'Tab'){
         this.edit.value = leftText + '\t' + rightText;
         cursorPos += 1;
+    } else if (keyObj.code === 'MetaLeft'){
+
     }
     else{
         this.edit.value = leftText + keyObj.small + rightText;

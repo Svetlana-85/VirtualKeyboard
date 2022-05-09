@@ -8,7 +8,7 @@ export default class Key {
     const doc = document;
     const key = doc.createElement('div');
     key.classList.add('key');
-    key.dataset['codeKey'] = code;
+    key.dataset.codeKey = code;
     const keySpec = doc.createElement('div');
     keySpec.classList.add('keySpec');
     if (shift && shift.match(/[^a-zA-Zа-яА-ЯёЁ0-9]/)) {
