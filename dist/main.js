@@ -15,201 +15,155 @@ __webpack_require__.r(__webpack_exports__);
 /* harmony import */ var _key_js__WEBPACK_IMPORTED_MODULE_0__ = __webpack_require__(/*! ./key.js */ "./src/js/key.js");
 /* harmony import */ var _layouts_en_js__WEBPACK_IMPORTED_MODULE_1__ = __webpack_require__(/*! ./layouts/en.js */ "./src/js/layouts/en.js");
 /* harmony import */ var _layouts_ru_js__WEBPACK_IMPORTED_MODULE_2__ = __webpack_require__(/*! ./layouts/ru.js */ "./src/js/layouts/ru.js");
-function _typeof(obj) { "@babel/helpers - typeof"; return _typeof = "function" == typeof Symbol && "symbol" == typeof Symbol.iterator ? function (obj) { return typeof obj; } : function (obj) { return obj && "function" == typeof Symbol && obj.constructor === Symbol && obj !== Symbol.prototype ? "symbol" : typeof obj; }, _typeof(obj); }
-
-function _defineProperties(target, props) { for (var i = 0; i < props.length; i++) { var descriptor = props[i]; descriptor.enumerable = descriptor.enumerable || false; descriptor.configurable = true; if ("value" in descriptor) descriptor.writable = true; Object.defineProperty(target, descriptor.key, descriptor); } }
-
-function _createClass(Constructor, protoProps, staticProps) { if (protoProps) _defineProperties(Constructor.prototype, protoProps); if (staticProps) _defineProperties(Constructor, staticProps); Object.defineProperty(Constructor, "prototype", { writable: false }); return Constructor; }
-
-function _classCallCheck(instance, Constructor) { if (!(instance instanceof Constructor)) { throw new TypeError("Cannot call a class as a function"); } }
-
-function _defineProperty(obj, key, value) { if (key in obj) { Object.defineProperty(obj, key, { value: value, enumerable: true, configurable: true, writable: true }); } else { obj[key] = value; } return obj; }
 
 
+ // eslint-disable-next-line no-undef
 
+const body = document.querySelector('body');
+class Keyboard {
+  constructor(rowsKeybord, lang) {
+    // eslint-disable-next-line no-undef
+    this.lang = lang;
+    this.rowsKeybord = rowsKeybord;
+    const doc = document;
+    const body = doc.querySelector('body');
+    const wrapper = doc.createElement('div');
+    wrapper.classList.add('wrapper');
+    body.prepend(wrapper);
+    this.edit = doc.createElement('textarea');
+    this.edit.classList.add('edit');
+    wrapper.appendChild(this.edit);
+    const keyboardDoc = doc.createElement('div');
+    keyboardDoc.classList.add('Keyboard');
+    wrapper.appendChild(keyboardDoc);
+    this.keys = [];
+    this.langLetter = lang === 'ru' ? _layouts_ru_js__WEBPACK_IMPORTED_MODULE_2__["default"] : _layouts_en_js__WEBPACK_IMPORTED_MODULE_1__["default"];
 
+    for (let i = 0; i < rowsKeybord.length; i += 1) {
+      const keyboardLine = doc.createElement('div');
+      keyboardLine.classList.add('keyboardLine');
+      keyboardDoc.appendChild(keyboardLine);
 
-function set(nameItem, val) {
-  // eslint-disable-next-line no-undef
-  window.localStorage.setItem(nameItem, val);
-}
+      for (let j = 0; j < rowsKeybord[i].length; j += 1) {
+        const keyObj = this.langLetter.find(value => value.code === rowsKeybord[i][j]);
+        if (!keyObj) return;
+        const key = new _key_js__WEBPACK_IMPORTED_MODULE_0__["default"](keyObj);
+        this.keys.push(key);
+        keyboardLine.appendChild(key.keyContent);
+      }
+    }
 
-function get(nameItem, val) {
-  // eslint-disable-next-line no-undef
-  return window.localStorage.getItem(nameItem) || val;
-} // eslint-disable-next-line no-undef
+    document.addEventListener('keydown', this.handleEvent);
+    document.addEventListener('keyup', this.handleEvent);
+    document.addEventListener('mousedown', this.handleEvent);
+    document.addEventListener('mouseup', this.handleEvent);
+  }
 
-
-var body = document.querySelector('body');
-
-var Keyboard = /*#__PURE__*/_createClass(function Keyboard(rowsKeybord, lang) {
-  var _this = this;
-
-  _classCallCheck(this, Keyboard);
-
-  _defineProperty(this, "handleEvent", function (e) {
+  handleEvent = e => {
     if (e.stopPropagation) e.stopPropagation();
-    var code;
+    let code;
 
     if (e.type.match(/mouse/) && e.target.closest('.key')) {
-      var _e$target$closest = e.target.closest('.key'),
-          codeKey = _e$target$closest.dataset.codeKey;
-
+      const {
+        dataset: {
+          codeKey
+        }
+      } = e.target.closest('.key');
       code = codeKey;
     } else code = e.code;
 
-    var keyObj = _this.keys.find(function (value) {
-      return value.code === code;
-    });
-
+    const keyObj = this.keys.find(value => value.code === code);
     if (!keyObj) return;
-
-    _this.edit.focus();
+    this.edit.focus();
 
     if (e.type.match(/keydown/)) {
       e.preventDefault();
       keyObj.keyContent.classList.add('activeKey');
-      if (e.code.match(/Control/)) _this.isControl = true;
-      if (e.code.match(/Shift/)) _this.isShift = true;
-      if (_this.isControl && e.code.match(/Shift/) || _this.isShift && e.code.match(/Control/)) _this.changeLanguage();
-
-      _this.printKeyboard(keyObj);
+      if (e.code.match(/Control/)) this.isControl = true;
+      if (e.code.match(/Shift/)) this.isShift = true;
+      if (this.isControl && e.code.match(/Shift/) || this.isShift && e.code.match(/Control/)) this.changeLanguage();
+      this.printKeyboard(keyObj);
     } else if (e.type.match(/mousedown/)) {
       keyObj.keyContent.classList.add('activeKey');
-      if (code.match(/Control/)) _this.isControl = true;
-      if (code.match(/Shift/)) _this.isShift = true;
-      if (_this.isControl && code.match(/Shift/) || _this.isShift && code.match(/Control/)) _this.changeLanguage();
-
-      _this.printKeyboard(keyObj);
+      if (code.match(/Control/)) this.isControl = true;
+      if (code.match(/Shift/)) this.isShift = true;
+      if (this.isControl && code.match(/Shift/) || this.isShift && code.match(/Control/)) this.changeLanguage();
+      this.printKeyboard(keyObj);
     } else if (e.type.match(/keyup/)) {
       keyObj.keyContent.classList.remove('activeKey');
-      if (e.code.match(/Control/)) _this.isControl = false;
-      if (e.code.match(/Shift/)) _this.isShift = false;
+      if (e.code.match(/Control/)) this.isControl = false;
+      if (e.code.match(/Shift/)) this.isShift = false;
     } else if (e.type.match(/mouseup/)) {
       keyObj.keyContent.classList.remove('activeKey');
-      if (keyObj.code.match(/Control/)) _this.isControl = false;
-      if (keyObj.code.match(/Shift/)) _this.isShift = false;
-    }
-  });
-
-  _defineProperty(this, "printKeyboard", function (keyObj) {
-    var cursorPos = _this.edit.selectionStart;
-
-    var leftText = _this.edit.value.slice(0, cursorPos);
-
-    var rightText = _this.edit.value.slice(cursorPos);
-
-    if (keyObj.code === 'Delete') {
-      _this.edit.value = leftText + rightText.slice(1);
-    } else if (keyObj.code === 'Backspace') {
-      _this.edit.value = leftText.slice(0, -1) + rightText;
-      cursorPos -= 1;
-    } else if (keyObj.code === 'Enter') {
-      _this.edit.value = leftText + '\n' + rightText;
-      cursorPos += 1;
-    } else if (keyObj.code === 'Tab') {
-      _this.edit.value = leftText + '\t' + rightText;
-      cursorPos += 1;
-    } else if (keyObj.code === 'MetaLeft') {} else {
-      _this.edit.value = leftText + keyObj.small + rightText;
-      cursorPos += 1;
-    }
-
-    _this.edit.setSelectionRange(cursorPos, cursorPos);
-  });
-
-  _defineProperty(this, "changeLanguage", function () {
-    _this.lang = _this.lang === "ru" ? "en" : "ru";
-    window.localStorage.setItem('LangKeyboard', _this.lang);
-    _this.langLetter = _this.lang === 'ru' ? _layouts_ru_js__WEBPACK_IMPORTED_MODULE_2__["default"] : _layouts_en_js__WEBPACK_IMPORTED_MODULE_1__["default"];
-
-    var _loop = function _loop(i) {
-      var keyObj = _this.langLetter.find(function (value) {
-        return value.code === _this.keys[i].code;
-      });
-
-      if (!keyObj) return {
-        v: void 0
-      };
-      _this.keys[i].small = keyObj.small;
-      _this.keys[i].shift = keyObj.shift;
-      if (_this.keys[i].shift && !_this.keys[i].code.match(/Arrow/)) _this.keys[i].keyContent.querySelector(".letter").innerHTML = keyObj.small;
-
-      if (_this.keys[i].shift && _this.keys[i].small.match(/[0-9-+=[\];'\\,./`]/)) {
-        _this.keys[i].keyContent.querySelector(".keySpec").innerHTML = keyObj.shift;
-      }
-
-      if (_this.keys[i].shift && _this.keys[i].small.match(/[ёхъжэбю]/)) {
-        _this.keys[i].keyContent.querySelector(".keySpec").innerHTML = '';
-      }
-    };
-
-    for (var i = 0; i < _this.keys.length; i += 1) {
-      var _ret = _loop(i);
-
-      if (_typeof(_ret) === "object") return _ret.v;
-    }
-  });
-
-  // eslint-disable-next-line no-undef
-  this.lang = lang;
-  this.rowsKeybord = rowsKeybord;
-  var doc = document;
-  var body = doc.querySelector('body');
-  var wrapper = doc.createElement('div');
-  wrapper.classList.add('wrapper');
-  body.prepend(wrapper);
-  this.edit = doc.createElement('textarea');
-  this.edit.classList.add('edit');
-  wrapper.appendChild(this.edit);
-  var keyboardDoc = doc.createElement('div');
-  keyboardDoc.classList.add('Keyboard');
-  wrapper.appendChild(keyboardDoc);
-  this.keys = [];
-  this.langLetter = lang === 'ru' ? _layouts_ru_js__WEBPACK_IMPORTED_MODULE_2__["default"] : _layouts_en_js__WEBPACK_IMPORTED_MODULE_1__["default"];
-
-  var _loop2 = function _loop2(i) {
-    var keyboardLine = doc.createElement('div');
-    keyboardLine.classList.add('keyboardLine');
-    keyboardDoc.appendChild(keyboardLine);
-
-    var _loop3 = function _loop3(j) {
-      var keyObj = _this.langLetter.find(function (value) {
-        return value.code === rowsKeybord[i][j];
-      });
-
-      if (!keyObj) return {
-        v: {
-          v: void 0
-        }
-      };
-      var key = new _key_js__WEBPACK_IMPORTED_MODULE_0__["default"](keyObj); //key.keyContent.setAtribute("code", keyObj.code);
-
-      _this.keys.push(key);
-
-      keyboardLine.appendChild(key.keyContent);
-    };
-
-    for (var j = 0; j < rowsKeybord[i].length; j += 1) {
-      var _ret3 = _loop3(j);
-
-      if (_typeof(_ret3) === "object") return _ret3.v;
+      if (keyObj.code.match(/Control/)) this.isControl = false;
+      if (keyObj.code.match(/Shift/)) this.isShift = false;
     }
   };
+  printKeyboard = keyObj => {
+    let cursorPos = this.edit.selectionStart;
+    const leftText = this.edit.value.slice(0, cursorPos);
+    const rightText = this.edit.value.slice(cursorPos);
 
-  for (var i = 0; i < rowsKeybord.length; i += 1) {
-    var _ret2 = _loop2(i);
+    if (keyObj.code === 'Delete') {
+      this.edit.value = leftText + rightText.slice(1);
+    } else if (keyObj.code === 'Backspace') {
+      this.edit.value = leftText.slice(0, -1) + rightText;
+      cursorPos -= 1;
+    } else if (keyObj.code === 'Enter') {
+      this.edit.value = leftText + '\n' + rightText;
+      cursorPos += 1;
+    } else if (keyObj.code === 'Tab') {
+      this.edit.value = leftText + '\t' + rightText;
+      cursorPos += 1;
+    } else if (keyObj.code === 'Space') {
+      this.edit.value = leftText + ' ' + rightText;
+      cursorPos += 1;
+    } else if (keyObj.code === 'ArrowLeft') {
+      if (cursorPos - 1 > 0) cursorPos -= 1;else cursorPos = 0;
+    } else if (keyObj.code === 'ArrowRight') {
+      cursorPos += 1;
+    } else if (keyObj.code === 'ArrowUp') {
+      cursorPos = cursorPos;
+    } else if (keyObj.code === 'ArrowDown') {
+      cursorPos = cursorPos;
+    } else if (keyObj.code === 'CapsLock') {
+      cursorPos = cursorPos;
+    } else if (keyObj.code === 'AltLeft' || keyObj.code === 'AltRight') {
+      cursorPos = cursorPos;
+    } else if (keyObj.code === 'ShiftLeft' || keyObj.code === 'ShiftRight') {
+      cursorPos = cursorPos;
+    } else if (keyObj.code === 'MetaLeft') {
+      cursorPos = cursorPos;
+    } else {
+      this.edit.value = leftText + keyObj.small + rightText;
+      cursorPos += 1;
+      console.log();
+    }
 
-    if (_typeof(_ret2) === "object") return _ret2.v;
-  }
+    this.edit.setSelectionRange(cursorPos, cursorPos);
+  };
+  changeLanguage = () => {
+    this.lang = this.lang === "ru" ? "en" : "ru";
+    window.localStorage.setItem('LangKeyboard', this.lang);
+    this.langLetter = this.lang === 'ru' ? _layouts_ru_js__WEBPACK_IMPORTED_MODULE_2__["default"] : _layouts_en_js__WEBPACK_IMPORTED_MODULE_1__["default"];
 
-  document.addEventListener('keydown', this.handleEvent);
-  document.addEventListener('keyup', this.handleEvent);
-  document.addEventListener('mousedown', this.handleEvent);
-  document.addEventListener('mouseup', this.handleEvent);
-});
+    for (let i = 0; i < this.keys.length; i += 1) {
+      const keyObj = this.langLetter.find(value => value.code === this.keys[i].code);
+      if (!keyObj) return;
+      this.keys[i].small = keyObj.small;
+      this.keys[i].shift = keyObj.shift;
+      if (this.keys[i].shift && !this.keys[i].code.match(/Arrow/)) this.keys[i].keyContent.querySelector(".letter").innerHTML = keyObj.small;
 
+      if (this.keys[i].shift && this.keys[i].small.match(/[0-9-+=[\];'\\,./`]/)) {
+        this.keys[i].keyContent.querySelector(".keySpec").innerHTML = keyObj.shift;
+      }
 
+      if (this.keys[i].shift && this.keys[i].small.match(/[ёхъжэбю]/)) {
+        this.keys[i].keyContent.querySelector(".keySpec").innerHTML = '';
+      }
+    }
+  };
+}
 
 /***/ }),
 
@@ -223,101 +177,94 @@ __webpack_require__.r(__webpack_exports__);
 /* harmony export */ __webpack_require__.d(__webpack_exports__, {
 /* harmony export */   "default": () => (/* binding */ Key)
 /* harmony export */ });
-function _defineProperties(target, props) { for (var i = 0; i < props.length; i++) { var descriptor = props[i]; descriptor.enumerable = descriptor.enumerable || false; descriptor.configurable = true; if ("value" in descriptor) descriptor.writable = true; Object.defineProperty(target, descriptor.key, descriptor); } }
+class Key {
+  constructor({
+    small,
+    shift,
+    code
+  }) {
+    this.small = small;
+    this.shift = shift;
+    this.code = code; // eslint-disable-next-line no-undef
 
-function _createClass(Constructor, protoProps, staticProps) { if (protoProps) _defineProperties(Constructor.prototype, protoProps); if (staticProps) _defineProperties(Constructor, staticProps); Object.defineProperty(Constructor, "prototype", { writable: false }); return Constructor; }
+    const doc = document;
+    const key = doc.createElement('div');
+    key.classList.add('key');
+    key.dataset.codeKey = code;
+    const keySpec = doc.createElement('div');
+    keySpec.classList.add('keySpec');
 
-function _classCallCheck(instance, Constructor) { if (!(instance instanceof Constructor)) { throw new TypeError("Cannot call a class as a function"); } }
+    if (shift && shift.match(/[^a-zA-Zа-яА-ЯёЁ0-9]/)) {
+      keySpec.textContent = shift;
+    } else {
+      keySpec.textContent = '';
+    }
 
-var Key = /*#__PURE__*/_createClass(function Key(_ref) {
-  var small = _ref.small,
-      shift = _ref.shift,
-      code = _ref.code;
+    const letter = doc.createElement('div');
+    letter.classList.add('letter');
 
-  _classCallCheck(this, Key);
+    switch (small) {
+      case 'Down':
+        letter.innerHTML = '&darr;';
+        break;
 
-  this.small = small;
-  this.shift = shift;
-  this.code = code; // eslint-disable-next-line no-undef
+      case 'Up':
+        letter.innerHTML = '&uarr;';
+        break;
 
-  var doc = document;
-  var key = doc.createElement('div');
-  key.classList.add('key');
-  key.dataset.codeKey = code;
-  var keySpec = doc.createElement('div');
-  keySpec.classList.add('keySpec');
+      case 'Left':
+        letter.innerHTML = '&larr;';
+        break;
 
-  if (shift && shift.match(/[^a-zA-Zа-яА-ЯёЁ0-9]/)) {
-    keySpec.textContent = shift;
-  } else {
-    keySpec.textContent = '';
+      case 'Right':
+        letter.innerHTML = '&rarr;';
+        break;
+
+      case 'Space':
+        break;
+
+      default:
+        letter.textContent = small;
+    }
+
+    key.appendChild(keySpec);
+    key.appendChild(letter);
+    this.keyContent = key;
+
+    if (small.match(/[a-zа-яё0-9-+`=[\];'\\,./]/)) {
+      key.classList.add('keyLetter');
+    }
+
+    if (small === 'Delete') {
+      key.classList.add('keyDel');
+    }
+
+    if (small === 'Backspace' || small === 'Tab' || small === 'CapsLock' || small === 'Enter') {
+      key.classList.add('keySpec2');
+    }
+
+    if (small === 'Delete') {
+      key.classList.add('keyDel');
+    }
+
+    if (small === 'Shift') {
+      key.classList.add('keyShift');
+    }
+
+    if (small === 'Ctrl') {
+      key.classList.add('keyCtrl');
+    }
+
+    if (small === 'Alt') {
+      key.classList.add('keyAlt');
+    }
+
+    if (small === 'Space') {
+      key.classList.add('keySpace');
+    }
   }
 
-  var letter = doc.createElement('div');
-  letter.classList.add('letter');
-
-  switch (small) {
-    case 'Down':
-      letter.innerHTML = '&darr;';
-      break;
-
-    case 'Up':
-      letter.innerHTML = '&uarr;';
-      break;
-
-    case 'Left':
-      letter.innerHTML = '&larr;';
-      break;
-
-    case 'Right':
-      letter.innerHTML = '&rarr;';
-      break;
-
-    case 'Space':
-      break;
-
-    default:
-      letter.textContent = small;
-  }
-
-  key.appendChild(keySpec);
-  key.appendChild(letter);
-  this.keyContent = key;
-
-  if (small.match(/[a-zа-яё0-9-+`=[\];'\\,./]/)) {
-    key.classList.add('keyLetter');
-  }
-
-  if (small === 'Delete') {
-    key.classList.add('keyDel');
-  }
-
-  if (small === 'Backspace' || small === 'Tab' || small === 'CapsLock' || small === 'Enter') {
-    key.classList.add('keySpec2');
-  }
-
-  if (small === 'Delete') {
-    key.classList.add('keyDel');
-  }
-
-  if (small === 'Shift') {
-    key.classList.add('keyShift');
-  }
-
-  if (small === 'Ctrl') {
-    key.classList.add('keyCtrl');
-  }
-
-  if (small === 'Alt') {
-    key.classList.add('keyAlt');
-  }
-
-  if (small === 'Space') {
-    key.classList.add('keySpace');
-  }
-});
-
-
+}
 
 /***/ }),
 
@@ -872,6 +819,18 @@ __webpack_require__.r(__webpack_exports__);
   code: 'ArrowRight'
 }]);
 
+/***/ }),
+
+/***/ "./src/styles/style.css":
+/*!******************************!*\
+  !*** ./src/styles/style.css ***!
+  \******************************/
+/***/ ((__unused_webpack_module, __webpack_exports__, __webpack_require__) => {
+
+__webpack_require__.r(__webpack_exports__);
+// extracted by mini-css-extract-plugin
+
+
 /***/ })
 
 /******/ 	});
@@ -938,12 +897,13 @@ var __webpack_exports__ = {};
   \**************************/
 __webpack_require__.r(__webpack_exports__);
 /* harmony import */ var _Keyboard_js__WEBPACK_IMPORTED_MODULE_0__ = __webpack_require__(/*! ./Keyboard.js */ "./src/js/Keyboard.js");
+/* harmony import */ var _styles_style_css__WEBPACK_IMPORTED_MODULE_1__ = __webpack_require__(/*! ../styles/style.css */ "./src/styles/style.css");
 /* eslint-disable import/extensions */
 
-var rowsKeybord = [['Backquote', 'Digit1', 'Digit2', 'Digit3', 'Digit4', 'Digit5', 'Digit6', 'Digit7', 'Digit8', 'Digit9', 'Digit0', 'Minus', 'Equal', 'Delete'], ['Tab', 'KeyQ', 'KeyW', 'KeyE', 'KeyR', 'KeyT', 'KeyY', 'KeyU', 'KeyI', 'KeyO', 'KeyP', 'BracketLeft', 'BracketRight', 'Backspace'], ['CapsLock', 'KeyA', 'KeyS', 'KeyD', 'KeyF', 'KeyG', 'KeyH', 'KeyJ', 'KeyK', 'KeyL', 'Semicolon', 'Quote', 'Backslash', 'Enter'], ['ShiftLeft', 'IntlSlash', 'KeyZ', 'KeyX', 'KeyC', 'KeyV', 'KeyB', 'KeyN', 'KeyM', 'Comma', 'Period', 'Slash', 'ArrowUp', 'ShiftRight'], ['ControlLeft', 'MetaLeft', 'AltLeft', 'Space', 'AltRight', 'ArrowLeft', 'ArrowDown', 'ArrowRight', 'ControlRight']]; // eslint-disable-next-line no-undef
 
-var lang = window.localStorage.getItem('LangKeyboard') || 'en'; // get('LangKeyboard', 'en');
-// eslint-disable-next-line no-new
+const rowsKeybord = [['Backquote', 'Digit1', 'Digit2', 'Digit3', 'Digit4', 'Digit5', 'Digit6', 'Digit7', 'Digit8', 'Digit9', 'Digit0', 'Minus', 'Equal', 'Delete'], ['Tab', 'KeyQ', 'KeyW', 'KeyE', 'KeyR', 'KeyT', 'KeyY', 'KeyU', 'KeyI', 'KeyO', 'KeyP', 'BracketLeft', 'BracketRight', 'Backspace'], ['CapsLock', 'KeyA', 'KeyS', 'KeyD', 'KeyF', 'KeyG', 'KeyH', 'KeyJ', 'KeyK', 'KeyL', 'Semicolon', 'Quote', 'Backslash', 'Enter'], ['ShiftLeft', 'IntlSlash', 'KeyZ', 'KeyX', 'KeyC', 'KeyV', 'KeyB', 'KeyN', 'KeyM', 'Comma', 'Period', 'Slash', 'ArrowUp', 'ShiftRight'], ['ControlLeft', 'MetaLeft', 'AltLeft', 'Space', 'AltRight', 'ArrowLeft', 'ArrowDown', 'ArrowRight', 'ControlRight']]; // eslint-disable-next-line no-undef
+
+const lang = window.localStorage.getItem('LangKeyboard') || 'en'; // eslint-disable-next-line no-new
 
 new _Keyboard_js__WEBPACK_IMPORTED_MODULE_0__["default"](rowsKeybord, lang);
 })();
