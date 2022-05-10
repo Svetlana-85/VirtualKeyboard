@@ -26,7 +26,7 @@ module.exports = {
     assetModuleFilename: 'assets/[hash][ext][query]',
     clean: true,
   },
-    
+
   devServer: {
     hot: true,
   },
@@ -35,7 +35,7 @@ module.exports = {
     rules: [
       { test: /\.(html)$/, use: ['html-loader'] },
       {
-        test: /\.(s[ac]|c)ss$/i, // /\.(le|c)ss$/i если вы используете less
+        test: /\.(s[ac]|c)ss$/i,
         use: [
           MiniCssExtractPlugin.loader,
           'css-loader',

@@ -2,16 +2,6 @@ import Key from './key.js';
 import en from './layouts/en.js';
 import ru from './layouts/ru.js';
 
-function set(nameItem, val) {
-    // eslint-disable-next-line no-undef
-  window.localStorage.setItem(nameItem, val);
-}
-  
-function get(nameItem, val) {
-  // eslint-disable-next-line no-undef
-  return (window.localStorage.getItem(nameItem) || val);
-}
-
 // eslint-disable-next-line no-undef
 const body = document.querySelector('body');
 
@@ -43,7 +33,6 @@ export default class Keyboard {
         const keyObj = this.langLetter.find((value) => value.code === rowsKeybord[i][j]);
         if (!keyObj) return;
         const key = new Key(keyObj);
-        //key.keyContent.setAtribute("code", keyObj.code);
         this.keys.push(key);
         keyboardLine.appendChild(key.keyContent);
       }
@@ -92,8 +81,6 @@ export default class Keyboard {
         if (keyObj.code.match(/Control/)) this.isControl = false;
         if (keyObj.code.match(/Shift/)) this.isShift = false;
       }
-
-    
   }
 
   printKeyboard = (keyObj) =>{
@@ -111,8 +98,26 @@ export default class Keyboard {
     } else if (keyObj.code === 'Tab'){
         this.edit.value = leftText + '\t' + rightText;
         cursorPos += 1;
-    } else if (keyObj.code === 'MetaLeft'){
-
+    } else if (keyObj.code === 'Space'){
+      this.edit.value = leftText + ' ' + rightText;
+      cursorPos += 1;
+    } else if(keyObj.code === 'ArrowLeft'){
+      if (cursorPos - 1 > 0) cursorPos -= 1
+      else cursorPos = 0;
+    } else if(keyObj.code === 'ArrowRight'){
+      cursorPos += 1;
+    } else if(keyObj.code === 'ArrowUp'){
+      cursorPos = cursorPos;
+    } else if(keyObj.code === 'ArrowDown'){
+      cursorPos = cursorPos;
+    }else if(keyObj.code === 'CapsLock'){
+      cursorPos = cursorPos;
+    }else if(keyObj.code === 'AltLeft' || keyObj.code === 'AltRight'){
+      cursorPos = cursorPos;
+    }else if(keyObj.code === 'ShiftLeft' || keyObj.code === 'ShiftRight'){
+      cursorPos = cursorPos;
+    }else if(keyObj.code === 'MetaLeft'){
+      cursorPos = cursorPos;
     }
     else{
         this.edit.value = leftText + keyObj.small + rightText;
