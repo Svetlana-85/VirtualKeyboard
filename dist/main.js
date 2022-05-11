@@ -99,8 +99,7 @@ class Keyboard {
         this.isShift = !this.isShift;
       } else keyObj.keyContent.classList.add('activeKey');
 
-      if (code.match(/Control/)) this.isControl = true; //if (code.match(/Shift/)) this.isShift = true;
-
+      if (code.match(/Control/)) this.isControl = true;
       if (this.isControl && code.match(/Shift/) || this.isShift && code.match(/Control/)) this.changeLanguage();
       this.printKeyboard(keyObj);
     } else if (e.type.match(/keyup/)) {
