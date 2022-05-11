@@ -25,10 +25,13 @@ module.exports = {
     path: path.resolve(__dirname, 'dist'),
     assetModuleFilename: 'assets/[hash][ext][query]',
     clean: true,
+    publicPath: '/dist/',
   },
 
   devServer: {
-    hot: true,
+    static: {
+      directory: path.join(__dirname, '/')
+  }
   },
 
   module: {
