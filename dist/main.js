@@ -24,12 +24,19 @@ class Keyboard {
   constructor(rowsKeybord, lang) {
     // eslint-disable-next-line no-undef
     this.lang = lang;
+    this.isShift = false;
     this.rowsKeybord = rowsKeybord;
     const doc = document;
     const body = doc.querySelector('body');
     const wrapper = doc.createElement('div');
     wrapper.classList.add('wrapper');
     body.prepend(wrapper);
+    const h1 = doc.createElement('h1');
+    h1.innerHTML = 'Virtual Keyboard';
+    wrapper.appendChild(h1);
+    const p = doc.createElement('p');
+    p.innerHTML = 'Переключение раскладки: Shift+Ctrl';
+    wrapper.appendChild(p);
     this.edit = doc.createElement('textarea');
     this.edit.classList.add('edit');
     wrapper.appendChild(this.edit);
@@ -84,9 +91,16 @@ class Keyboard {
       if (this.isControl && e.code.match(/Shift/) || this.isShift && e.code.match(/Control/)) this.changeLanguage();
       this.printKeyboard(keyObj);
     } else if (e.type.match(/mousedown/)) {
-      keyObj.keyContent.classList.add('activeKey');
-      if (code.match(/Control/)) this.isControl = true;
-      if (code.match(/Shift/)) this.isShift = true;
+      if (code.match(/Shift/)) {
+        const shift = document.querySelectorAll('.keyShift');
+        shift[0].classList.toggle('activeKey');
+        shift[1].classList.toggle('activeKey'); //keyObj.keyContent.classList.toggle('activeKey');
+
+        this.isShift = !this.isShift;
+      } else keyObj.keyContent.classList.add('activeKey');
+
+      if (code.match(/Control/)) this.isControl = true; //if (code.match(/Shift/)) this.isShift = true;
+
       if (this.isControl && code.match(/Shift/) || this.isShift && code.match(/Control/)) this.changeLanguage();
       this.printKeyboard(keyObj);
     } else if (e.type.match(/keyup/)) {
@@ -94,9 +108,11 @@ class Keyboard {
       if (e.code.match(/Control/)) this.isControl = false;
       if (e.code.match(/Shift/)) this.isShift = false;
     } else if (e.type.match(/mouseup/)) {
-      keyObj.keyContent.classList.remove('activeKey');
+      if (!code.match(/Shift/)) {
+        keyObj.keyContent.classList.remove('activeKey');
+      }
+
       if (keyObj.code.match(/Control/)) this.isControl = false;
-      if (keyObj.code.match(/Shift/)) this.isShift = false;
     }
   };
   printKeyboard = keyObj => {
@@ -128,6 +144,8 @@ class Keyboard {
       cursorPos = cursorPos;
     } else if (keyObj.code === 'CapsLock') {
       cursorPos = cursorPos;
+    } else if (keyObj.code === 'ControlRight' || keyObj.code === 'ControlLeft') {
+      cursorPos = cursorPos;
     } else if (keyObj.code === 'AltLeft' || keyObj.code === 'AltRight') {
       cursorPos = cursorPos;
     } else if (keyObj.code === 'ShiftLeft' || keyObj.code === 'ShiftRight') {
@@ -137,7 +155,6 @@ class Keyboard {
     } else {
       this.edit.value = leftText + keyObj.small + rightText;
       cursorPos += 1;
-      console.log();
     }
 
     this.edit.setSelectionRange(cursorPos, cursorPos);
@@ -152,7 +169,7 @@ class Keyboard {
       if (!keyObj) return;
       this.keys[i].small = keyObj.small;
       this.keys[i].shift = keyObj.shift;
-      if (this.keys[i].shift && !this.keys[i].code.match(/Arrow/)) this.keys[i].keyContent.querySelector(".letter").innerHTML = keyObj.small;
+      if (this.keys[i].shift && !this.keys[i].code.match(/Arrow/) && !this.keys[i].code.match(/Space/)) this.keys[i].keyContent.querySelector(".letter").innerHTML = keyObj.small;
 
       if (this.keys[i].shift && this.keys[i].small.match(/[0-9-+=[\];'\\,./`]/)) {
         this.keys[i].keyContent.querySelector(".keySpec").innerHTML = keyObj.shift;
